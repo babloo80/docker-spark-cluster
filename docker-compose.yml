@@ -2,18 +2,18 @@ version: '3.7'
 
 services:
   spark-master:
-    image: 192.168.1.15:5000/spark-master
+    image: spark-master/latest
     ports:
       - "9090:8080"
       - "7077:7077"
     volumes:
-       - /home/babloo/work/git/docker-spark-cluster:/opt/spark-apps
-       - /home/babloo/work/git/docker-spark-cluster/opt/spark-data
+       - /tmp/docker-spark-cluster:/opt/spark-apps
+       - /tmp/docker-spark-cluster:/opt/spark-data
     networks:
       - spark-network
 
   spark-worker:
-    image: 192.168.1.15:5000/spark-worker
+    image: spark-worker/latest
     depends_on:
       - spark-master
     environment:
@@ -23,8 +23,8 @@ services:
       - SPARK_DRIVER_MEMORY=128m
       - SPARK_EXECUTOR_MEMORY=256m
     volumes:
-       - /home/babloo/work/git/docker-spark-cluster:/opt/spark-apps
-       - /home/babloo/work/git/docker-spark-cluster:/opt/spark-data
+       - /tmp/docker-spark-cluster:/opt/spark-apps
+       - /tmp/docker-spark-cluster:/opt/spark-data
     networks:
       - spark-network
     deploy:
