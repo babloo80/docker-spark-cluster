@@ -1,52 +1,35 @@
-version: "3.7"
-networks:
-  spark-network:
-    ipam:
-     config:
-       - subnet: 10.5.0.0/16
+version: '3.7'
 
 services:
   spark-master:
-    image: spark-master:latest
+    image: 192.168.1.15:5000/spark-master
     ports:
       - "9090:8080"
       - "7077:7077"
     volumes:
-       - ./apps:/opt/spark-apps
-       - ./data:/opt/spark-data
-    environment:
-      - "SPARK_LOCAL_IP=spark-master"
+       - /home/babloo/work/git/docker-spark-cluster:/opt/spark-apps
+       - /home/babloo/work/git/docker-spark-cluster/opt/spark-data
     networks:
-      spark-network:
-        ipv4_address: 10.5.0.2  
+      - spark-network
 
-  spark-worker-1:
-    image: spark-worker:latest
+  spark-worker:
+    image: 192.168.1.15:5000/spark-worker
     depends_on:
       - spark-master
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=4
       - SPARK_WORKER_MEMORY=2G
+      - SPARK_DRIVER_MEMORY=128m
+      - SPARK_EXECUTOR_MEMORY=256m
     volumes:
-       - ./apps:/opt/spark-apps
-       - ./data:/opt/spark-data
+       - /home/babloo/work/git/docker-spark-cluster:/opt/spark-apps
+       - /home/babloo/work/git/docker-spark-cluster:/opt/spark-data
     networks:
-      spark-network:
-        ipv4_address: 10.5.0.3   
-
-  spark-worker-2:
-    image: spark-worker:latest
-    depends_on:
-      - spark-master
-    environment:
-      - SPARK_MASTER=spark://spark-master:7077
-      - SPARK_WORKER_CORES=4
-      - SPARK_WORKER_MEMORY=2G
-    volumes:
-       - ./apps:/opt/spark-apps
-       - ./data:/opt/spark-data
-    networks:
-      spark-network:
-        ipv4_address: 10.5.0.4
-
+      - spark-network
+    deploy:
+      mode: replicated
+      replicas: 5
+  
+networks:
+  spark-network:
