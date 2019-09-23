@@ -2,34 +2,32 @@ version: '3.7'
 
 services:
   spark-master:
-    image: spark-master/latest
+    image: spark-master
     ports:
       - "9090:8080"
       - "7077:7077"
     volumes:
-       - /tmp/docker-spark-cluster:/opt/spark-apps
-       - /tmp/docker-spark-cluster:/opt/spark-data
+       - /opt/spark/apps:/opt/spark-apps
+       - /opt/spark/data:/opt/spark-data
     networks:
       - spark-network
 
   spark-worker:
-    image: spark-worker/latest
+    image: spark-worker
     depends_on:
       - spark-master
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=4
       - SPARK_WORKER_MEMORY=2G
-      - SPARK_DRIVER_MEMORY=128m
-      - SPARK_EXECUTOR_MEMORY=256m
     volumes:
-       - /tmp/docker-spark-cluster:/opt/spark-apps
-       - /tmp/docker-spark-cluster:/opt/spark-data
+       - /opt/spark/apps:/opt/spark-apps
+       - /opt/spark/data:/opt/spark-data
     networks:
       - spark-network
     deploy:
       mode: replicated
-      replicas: 5
+      replicas: 3
   
 networks:
   spark-network:
