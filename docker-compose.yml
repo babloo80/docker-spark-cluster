@@ -21,15 +21,13 @@ services:
         ipv4_address: 10.5.0.2  
 
   spark-worker-1:
-    build: ./docker/spark-master
+    image: spark-worker:latest
     depends_on:
       - spark-master
     environment:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=4
       - SPARK_WORKER_MEMORY=2G
-      - SPARK_DRIVER_MEMORY=128m
-      - SPARK_EXECUTOR_MEMORY=256m
     volumes:
        - ./apps:/opt/spark-apps
        - ./data:/opt/spark-data
@@ -45,8 +43,6 @@ services:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=4
       - SPARK_WORKER_MEMORY=2G
-      - SPARK_DRIVER_MEMORY=128m
-      - SPARK_EXECUTOR_MEMORY=256m
     volumes:
        - ./apps:/opt/spark-apps
        - ./data:/opt/spark-data
