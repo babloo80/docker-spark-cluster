@@ -28,7 +28,6 @@ services:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=4
       - SPARK_WORKER_MEMORY=2G
-      - SPARK_DRIVER_MEMORY=128m
       - SPARK_EXECUTOR_MEMORY=256m
     volumes:
        - ./apps:/opt/spark-apps
@@ -45,7 +44,6 @@ services:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=4
       - SPARK_WORKER_MEMORY=2G
-      - SPARK_DRIVER_MEMORY=128m
       - SPARK_EXECUTOR_MEMORY=256m
     volumes:
        - ./apps:/opt/spark-apps
