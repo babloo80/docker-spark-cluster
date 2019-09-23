@@ -1,0 +1,56 @@
+version: "3.7"
+networks:
+  spark-network:
+    ipam:
+     config:
+       - subnet: 10.5.0.0/16
+
+services:
+  spark-master:
+    image: spark-master:latest
+    ports:
+      - "9090:8080"
+      - "7077:7077"
+    volumes:
+       - ./apps:/opt/spark-apps
+       - ./data:/opt/spark-data
+    environment:
+      - "SPARK_LOCAL_IP=spark-master"
+    networks:
+      spark-network:
+        ipv4_address: 10.5.0.2  
+
+  spark-worker-1:
+    build: ./docker/spark-master
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=4
+      - SPARK_WORKER_MEMORY=2G
+      - SPARK_DRIVER_MEMORY=128m
+      - SPARK_EXECUTOR_MEMORY=256m
+    volumes:
+       - ./apps:/opt/spark-apps
+       - ./data:/opt/spark-data
+    networks:
+      spark-network:
+        ipv4_address: 10.5.0.3   
+
+  spark-worker-2:
+    image: spark-worker:latest
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=4
+      - SPARK_WORKER_MEMORY=2G
+      - SPARK_DRIVER_MEMORY=128m
+      - SPARK_EXECUTOR_MEMORY=256m
+    volumes:
+       - ./apps:/opt/spark-apps
+       - ./data:/opt/spark-data
+    networks:
+      spark-network:
+        ipv4_address: 10.5.0.4
+
