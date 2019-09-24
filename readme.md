@@ -1,6 +1,8 @@
 # docker-spark-cluster
 This repository provides a quick way to deploy a 2 node apache spark cluster for development purposes.
 
+The `master` branch is a placeholder for `docker compose` and the `swarm` branch is a placeholder for `docker swarm`.
+
 ## Building Apache Spark from scratch.
 Instead of OOTB binaries, building custom binaries for Apache Spark is generally useful as there exists more than couple of variable parameters.
 
