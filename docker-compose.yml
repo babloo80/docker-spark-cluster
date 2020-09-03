@@ -9,7 +9,7 @@ services:
   spark-master:
     image: spark-master:latest
     ports:
-      - "9090:8080"
+      - "8080:8080"
       - "7077:7077"
     volumes:
        - ./apps:/opt/spark-apps
@@ -28,6 +28,7 @@ services:
       - SPARK_MASTER=spark://spark-master:7077
       - SPARK_WORKER_CORES=4
       - SPARK_WORKER_MEMORY=2G
+      - PYSPARK_PYTHON=python3
     volumes:
        - ./apps:/opt/spark-apps
        - ./data:/opt/spark-data
@@ -49,4 +50,15 @@ services:
     networks:
       spark-network:
         ipv4_address: 10.5.0.4
+  jupyterlab:
+    image: spark-jupyterlab:latest
+    container_name: jupyterlab
+    ports:
+      - 9898:9898
+    volumes:
+       - ./apps:/opt/spark-apps
+       - ./data:/opt/spark-data
+    networks:
+      spark-network:
+        ipv4_address: 10.5.0.5
 
