@@ -1,4 +1,4 @@
-FROM spark-base:latest 
+FROM spark-base:3.0.0 
 
 ARG spark_version=3.0.0
 ARG jupyterlab_version=2.1.5

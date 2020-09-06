@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: spark-jupyterlab
+  name: spark-jupyterlab
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: spark-jupyterlab
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        io.kompose.service: spark-jupyterlab
+    spec:
+      containers:
+        - image: localhost:32000/spark-jupyterlab:3.0.0
+          imagePullPolicy: Always
+          name: spark-jupyterlab
+          ports:
+            - containerPort: 9898
+            - containerPort: 38000
+            - containerPort: 38001
+            - containerPort: 38002
+            - containerPort: 38003
+            - containerPort: 38004
+            - containerPort: 38005
+          volumeMounts:
+            - mountPath: /opt/spark/apps
+              name: spark-apps-pv-claim
+              readOnly: false
+            - mountPath: /opt/spark/data
+              name: spark-data-pv-claim
+              readOnly: false
+          resources: {}
+      hostname: spark-jupyterlab
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+        - name: spark-apps-pv-claim
+          persistentVolumeClaim:
+            claimName: spark-apps-pv-claim
+        - name: spark-data-pv-claim
+          persistentVolumeClaim:
+            claimName: spark-data-pv-claim
+status: {}
