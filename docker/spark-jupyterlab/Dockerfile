@@ -5,6 +5,7 @@ ARG jupyterlab_version=2.1.5
 ARG spark_directory=/opt/spark
 ARG spylon_version=0.4.1
 RUN apt-get update -y && \
+    apt-get install fonts-firacode && \
     apt-get install -y python3-pip && \
     pip3 install pyspark==${spark_version} jupyterlab==${jupyterlab_version} spylon-kernel==${spylon_version}
 # Install support for Scalla
@@ -18,5 +19,7 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
 EXPOSE 9898
 RUN mkdir -p ${spark_directory}/apps
 RUN mkdir -p ${spark_directory}/data
+# Enable font ligatures using fonts-firacode.
+COPY tracker.jupyterlab-settings /root/.jupyter/lab/user-settings/@jupyterlab/notebook-extension/tracker.jupyterlab-settings
 WORKDIR ${spark_directory}
 CMD jupyter lab --ip=0.0.0.0 --port=9898 --no-browser --allow-root --NotebookApp.token=

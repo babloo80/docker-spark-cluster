@@ -1,6 +1,7 @@
 FROM ubuntu:20.04
 
 ENV DAEMON_RUN=true \
+    SHELL=/usr/bin/bash \
     SPARK_VERSION=3.0.0 \
     HADOOP_VERSION=3.2 \
     SPARK_HOME=/spark \
