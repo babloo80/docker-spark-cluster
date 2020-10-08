@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: spark-worker-node
+  name: spark-worker-node
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      io.kompose.service: spark-worker-node
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        io.kompose.service: spark-worker-node
+    spec:
+      initContainers:
+        - name: wait-for-master
+          image: curlimages/curl
+          command:
+            - curl
+            - -f
+            - http://spark-master-node:8080
+      containers:
+        - image: localhost:32000/spark-worker:3.0.0
+          imagePullPolicy: Always
+          name: spark-worker-node
+          volumeMounts:
+            - mountPath: /opt/spark/apps
+              name: spark-apps-pv-claim
+              readOnly: false
+            - mountPath: /opt/spark/data
+              name: spark-data-pv-claim
+              readOnly: false
+          ports:
+            - containerPort: 7078
+            - containerPort: 8081
+            - containerPort: 38000
+            - containerPort: 38001
+            - containerPort: 38002
+            - containerPort: 38003
+            - containerPort: 38004
+            - containerPort: 38005
+          env:
+            - name: SPARK_MASTER
+              value: "spark://spark-master-node:7077"
+            - name: SPARK_WORKER_CORES
+              value: "4"
+            - name: SPARK_WORKER_MEMORY
+              value: "2G"
+          resources: {}
+      hostname: spark-worker-node
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+        - name: spark-apps-pv-claim
+          persistentVolumeClaim:
+            claimName: spark-apps-pv-claim
+        - name: spark-data-pv-claim
+          persistentVolumeClaim:
+            claimName: spark-data-pv-claim
+status: {}

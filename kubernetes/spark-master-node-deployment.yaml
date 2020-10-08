@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: spark-master-node
+  name: spark-master-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: spark-master-node
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        io.kompose.service: spark-master-node
+    spec:
+      containers:
+        - image: localhost:32000/spark-master:3.0.0
+          imagePullPolicy: Always
+          name: spark-master-node
+          ports:
+            - containerPort: 8080
+            - containerPort: 7077
+            - containerPort: 38000
+            - containerPort: 38001
+            - containerPort: 38002
+            - containerPort: 38003
+            - containerPort: 38004
+            - containerPort: 38005
+          volumeMounts:
+            - mountPath: /opt/spark/apps
+              name: spark-apps-pv-claim
+              readOnly: false
+            - mountPath: /opt/spark/data
+              name: spark-data-pv-claim
+              readOnly: false
+          env:
+            - name: SPARK_LOCAL_IP
+              value: "spark-master-node"
+          resources: {}
+      hostname: spark-master-node
+      restartPolicy: Always
+      serviceAccountName: ""
+      volumes:
+        - name: spark-apps-pv-claim
+          persistentVolumeClaim:
+            claimName: spark-apps-pv-claim
+        - name: spark-data-pv-claim
+          persistentVolumeClaim:
+            claimName: spark-data-pv-claim
+status: {}

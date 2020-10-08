@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: spark-data-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: shared-storage
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: /storage/data/data_science/spark/data
