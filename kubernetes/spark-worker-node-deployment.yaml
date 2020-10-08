@@ -5,7 +5,7 @@ metadata:
     io.kompose.service: spark-worker-node
   name: spark-worker-node
 spec:
-  replicas: 0
+  replicas: 2
   selector:
     matchLabels:
       io.kompose.service: spark-worker-node
@@ -15,6 +15,13 @@ spec:
       labels:
         io.kompose.service: spark-worker-node
     spec:
+      initContainers:
+        - name: wait-for-master
+          image: curlimages/curl
+          command:
+            - curl
+            - -f
+            - http://spark-master-node:8080
       containers:
         - image: localhost:32000/spark-worker:3.0.0
           imagePullPolicy: Always
